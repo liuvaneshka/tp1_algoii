@@ -101,7 +101,7 @@ void buscar_argumento(int t_texto, int t_fragmento, string texto, string fragmen
 
 			}
 
-			if((i == posicion_final_valida) && ( texto[i] != fragmento[j])){
+			if((i == posicion_final_valida) && ( texto[i] != fragmento[j]) && (coincidencia == 0)){
 
 				k = 0;
 				i = t_texto;				
