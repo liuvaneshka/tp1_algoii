@@ -7,7 +7,8 @@ bool validar_cantidad_parametros(int cantidad){
 	
 	/*
 	PRE: recibe un entero positivo
-	POST: retorna un booleano verdadero si esta entre 1 y 3, falso cualquier otra numero
+	POST: retorna un booleano verdadero si esta entre 1 y 3, 
+		falso cualquier otro numero
 	*/
 
 	bool cantidad_validada = true;
@@ -27,8 +28,10 @@ bool validar_cantidad_parametros(int cantidad){
 int cantidad_caracteres(char argumento[]){
 
 	/*
-	PRE: recibe un doble puntero ( arreglo de punteros a str) que contiene el argumento 
-	POST: retorna un entero que representa la cantidad de caracteres del argumento
+	PRE: recibe un doble puntero (arreglo de punteros a str) que contiene el
+	    argumento 
+	POST: retorna un entero que representa la cantidad de caracteres del 
+		argumento
 	*/
 
 	char c;
@@ -36,7 +39,7 @@ int cantidad_caracteres(char argumento[]){
 
 	do{
 		c = argumento[cantidad];
-		//cout << argumento[cantidad] << " tipo de dato " << typeid(argumento[cantidad]).name() << endl;
+		//cout << c << " tipo " << typeid(argumento[cantidad]).name() << endl;
 		cantidad++;
 
 	}while(c != 0);
@@ -60,7 +63,7 @@ string crear_cadena_del_argv(int tamanio,char argumento[]){
 
 	for(int i = 0; i<= tamanio; i++ ){
 
-		caracter = tolower(argumento[i]);
+		caracter = (char)tolower(argumento[i]);
 		cadena = cadena + caracter;
 	}
 
@@ -68,76 +71,105 @@ string crear_cadena_del_argv(int tamanio,char argumento[]){
 }
 
 
-void buscar_argumento(int t_texto, int t_fragmento, string texto, string fragmento){
+void imprimir_resultado(int *posiciones, int coincidencias){
+	
+	/*
+	PRE: recibe un puntero de enteros represetando la direccion de las posiciones
+		donde hubo coincidencia, y un entero que representa el numero de 
+		coincidencias que totales en la historia
+	POST:
+	*/
+
+	if( coincidencias == 0 ){
+
+		cout << "No se encuentra esa frase en la historia indicada." << endl;
+
+	}
+
+	else{
+
+		for(int i = 0; i < coincidencias; i++)
+			cout << posiciones[i] << "-";
+		cout << endl;
+	}
+
+}
+
+
+void buscar_argumento(int t_historia, int t_frase, string historia, string frase){
+	/*
+	PRE: recibe dos enteros, uno representa el tamanio de la historia
+		otro representando el tamanio de la frase
+		recibe dos cadenas, una es las historia, el segundo la frase a buscar
+	POST: recorre la historia comparandola con el primer caracter de la frase 
+		llama a la funcion imprimir resultado
+
+	*/
 
 	int posicion = 0, coincidencias = 0;
-	int posicion_final_valida = t_texto - t_fragmento;
+	int posicion_final_valida = t_historia - t_frase;
 	int* p;
 	p = new int[coincidencias];
 
-	for(int i = 0; i < t_texto; i++){
+	for(int i = 0; i < t_historia; i++){
 
 		int k = 0, coincidencia = 0;
 
 		for(int j = 0; j < k+1; j++){
 
-			cout << texto[i] << " " << fragmento[j] << j << endl;
+			// imprime los valores q se comparan
+			// cout << historia[i] << " " << frase[j] << j << endl;
 
-			if(texto[i] == fragmento[j]){
+			if(historia[i] == frase[j]){
 
 				coincidencia++;
 				i++;
 				k++;
 			} 
 
-			if( (j == (t_fragmento - 1)) && (coincidencia == t_fragmento) ){
+			if( (j == (t_frase - 1)) && (coincidencia == t_frase) ){
 
 				posicion = i - coincidencia;
+				p[coincidencias] = posicion;
 				coincidencias++;
-				cout << "posicion " << posicion << endl;
 				k=0;
 				i = i - 1 ;
-				p[posicion];
 
 			}
 
-			if((i == posicion_final_valida) && ( texto[i] != fragmento[j]) && (coincidencia == 0)){
+			if((i == posicion_final_valida) && (historia[i] != frase[j]) && (coincidencia == 0)){
 
 				k = 0;
-				i = t_texto;				
+				i = t_historia;				
 			}
 		}
 	}
 
-	cout << "coincidencias totales " << coincidencias <<endl;
-	for(int l = 0; l<=coincidencias; l++)
-		cout << p[l] << "  ";
-	cout << endl;
+	imprimir_resultado(p, coincidencias);
+
 	delete[]p;
-	p = 0;
+	p = NULL;
 
 }
 
 
 int main(int argc, char* argv[]){
 
-	cout << "Cantidad de argumentos: " << argc << endl;
+	//cout << "Cantidad de argumentos: " << argc << endl;
 	bool cantidad_parametros = false ;
-	int cantidad_texto = 0, cantidad_busqueda = 0;
-	string texto, fragmento;
+	int cantidad_historia = 0, cantidad_busqueda = 0;
+	string historia, frase;
 
 	cantidad_parametros = validar_cantidad_parametros(argc);
-	cantidad_texto = cantidad_caracteres(argv[1]);
+	cantidad_historia = cantidad_caracteres(argv[1]);
 	cantidad_busqueda = cantidad_caracteres(argv[2]);
 
-	while((cantidad_parametros) && (cantidad_texto >= cantidad_busqueda)){
+	while((cantidad_parametros) && (cantidad_historia >= cantidad_busqueda)){
 		
-		texto = crear_cadena_del_argv(cantidad_texto, argv[1]);
-		cout << "texto " << texto << endl;
-		fragmento = crear_cadena_del_argv(cantidad_busqueda, argv[2]);
-		cout << "buscar " << fragmento << endl;
+		historia = crear_cadena_del_argv(cantidad_historia, argv[1]);
+		frase = crear_cadena_del_argv(cantidad_busqueda, argv[2]);
 
-		buscar_argumento(cantidad_texto, cantidad_busqueda, texto, fragmento);
+		buscar_argumento(cantidad_historia, cantidad_busqueda, historia, frase);
 
 		cantidad_parametros = false;
 	};
